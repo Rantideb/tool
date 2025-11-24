@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { MapPin, Globe, Building, Copy, Check, Search } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
@@ -52,7 +52,7 @@ export default function IPLocation() {
     return ipv4Regex.test(ip) || ipv6Regex.test(ip);
   };
 
-  const fetchIPLocation = async (ip: string) => {
+  const fetchIPLocation = useCallback(async (ip: string) => {
     setLoading(true);
     setError("");
 
@@ -93,7 +93,7 @@ export default function IPLocation() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const getCurrentIP = async () => {
     setLoading(true);
@@ -153,7 +153,7 @@ export default function IPLocation() {
     };
 
     initializeIP();
-  }, []);
+  }, [fetchIPLocation]);
 
   return (
     <ToolsWrapper>

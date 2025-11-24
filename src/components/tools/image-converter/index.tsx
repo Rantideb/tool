@@ -71,7 +71,7 @@ export default function ImageConverter() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const canvasRef = useRef(null);
 
-  const outputFormats = [
+  const outputFormats = useMemo(() => [
     { value: "png", label: "PNG", mimeType: "image/png", hasQuality: false },
     {
       value: "jpeg",
@@ -92,11 +92,11 @@ export default function ImageConverter() {
       mimeType: "image/x-icon",
       hasQuality: false,
     },
-  ];
+  ], []);
 
   const selectedOutputFormat = useMemo(() => {
     return outputFormats.find((f) => f.value === outputFormat);
-  }, [outputFormat]);
+  }, [outputFormat, outputFormats]);
 
   const showQualitySlider = useMemo(() => {
     return selectedOutputFormat?.hasQuality;
@@ -645,8 +645,8 @@ export default function ImageConverter() {
                                 {Math.round(
                                   (1 -
                                     result.convertedSize /
-                                      result.originalSize) *
-                                    100,
+                                    result.originalSize) *
+                                  100,
                                 )}
                                 %)
                               </span>

@@ -191,7 +191,7 @@ export default function Home() {
             {filteredTools.map((tool) => (
               <Card
                 key={tool.id}
-                className="group cursor-pointer border transition-all duration-300 hover:scale-[1.02] hover:border-slate-600 hover:shadow-lg"
+                className="group cursor-pointer border transition-all duration-300 hover:scale-[1.02] hover:border-slate-600 hover:bg-slate-100 hover:shadow-lg dark:hover:bg-slate-800"
                 onClick={() => handleToolClick(tool)}
               >
                 <CardHeader className="pb-4">
@@ -210,7 +210,7 @@ export default function Home() {
                             {tool.popular && (
                               <Badge
                                 variant="secondary"
-                                className="w-fit bg-slate-800 text-slate-300"
+                                className="w-fit bg-slate-800 text-slate-300 dark:bg-slate-800 dark:text-slate-300"
                               >
                                 <Star className="mr-1 h-3 w-3" />
                                 Popular
@@ -260,7 +260,7 @@ export default function Home() {
                       <Badge
                         key={index}
                         variant="secondary"
-                        className="bg-slate-100 text-xs text-slate-600"
+                        className="bg-slate-100 text-xs text-slate-600 dark:bg-slate-100 dark:text-slate-600"
                       >
                         {tag}
                       </Badge>
@@ -268,7 +268,7 @@ export default function Home() {
                     {tool.tags.length > 3 && (
                       <Badge
                         variant="secondary"
-                        className="bg-slate-100 text-xs text-slate-600"
+                        className="bg-slate-100 text-xs text-slate-600 dark:bg-slate-100 dark:text-slate-600"
                       >
                         +{tool.tags.length - 3} more
                       </Badge>

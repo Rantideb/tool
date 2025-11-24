@@ -21,7 +21,7 @@ export default function QuickActions({ quickActions }: Props) {
         {quickActions.map((action, index) => (
           <Card
             key={index}
-            className="cursor-pointer border transition-all duration-300 hover:border-slate-600 hover:bg-slate-900 hover:shadow-md"
+            className="cursor-pointer border transition-all duration-300 hover:border-slate-600 hover:bg-slate-100 hover:shadow-md dark:hover:bg-slate-900"
             onClick={action.action}
           >
             <CardContent className="p-4 md:p-6">

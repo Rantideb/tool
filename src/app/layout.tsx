@@ -8,6 +8,7 @@ import MainLayout from "@/components/wrappers/Main";
 import QueryProvider from "@/providers/QueryProvider";
 import DataProvider from "@/providers/DataProvider";
 import { NavigationProvider } from "@/providers/NavigationProvider";
+import { ThemeProvider } from "@/providers/ThemeProvider";
 
 import type { Metadata } from "next";
 
@@ -57,17 +58,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <GoogleAnalytics gaId="G-6Q3EJCYDZ6" />
 
-      <body className={`${firaSans.className} dark antialiased`}>
-        <QueryProvider>
-          <DataProvider>
-            <NavigationProvider>
-              <MainLayout>{children}</MainLayout>
-            </NavigationProvider>
-          </DataProvider>
-        </QueryProvider>
+      <body className={`${firaSans.className} antialiased`}>
+        <ThemeProvider>
+          <QueryProvider>
+            <DataProvider>
+              <NavigationProvider>
+                <MainLayout>{children}</MainLayout>
+              </NavigationProvider>
+            </DataProvider>
+          </QueryProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

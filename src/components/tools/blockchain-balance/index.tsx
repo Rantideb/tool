@@ -9,12 +9,11 @@ import {
   Coins,
   Search,
   Wallet,
-  Network,
   Loader2,
+  Network,
   Settings,
   TrendingUp,
   ExternalLink,
-  Github,
 } from "lucide-react";
 
 import { Input } from "@/components/ui/input";

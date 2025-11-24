@@ -71,7 +71,7 @@ export default function UUID() {
     return "00000000-0000-0000-0000-000000000000";
   };
 
-  const generateUUID = (version: string) => {
+  const generateUUID = useCallback((version: string) => {
     switch (version) {
       case "1":
         return generateUUIDv1();
@@ -82,7 +82,7 @@ export default function UUID() {
       default:
         return generateUUIDv4();
     }
-  };
+  }, []);
 
   const handleGenerate = useCallback(() => {
     const count = Math.min(Math.max(1, parseInt(batchCount) || 1), 100);
@@ -99,7 +99,7 @@ export default function UUID() {
 
     setUuids(newUuids);
     setCopiedIndex(null);
-  }, [selectedVersion, batchCount]);
+  }, [selectedVersion, batchCount, generateUUID]);
 
   const copyToClipboard = async (uuid: string, index: number) => {
     try {
@@ -125,7 +125,7 @@ export default function UUID() {
   // Generate initial UUID on mount
   useEffect(() => {
     handleGenerate();
-  }, []);
+  }, [handleGenerate]);
 
   return (
     <ToolsWrapper>

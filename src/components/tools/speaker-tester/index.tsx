@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import {
   Copy,
   Info,
@@ -179,27 +179,6 @@ export default function SpeakerTester() {
   const mediaStreamDestinationRef =
     useRef<MediaStreamAudioDestinationNode | null>(null);
 
-  useEffect(() => {
-    initializeAudioContext();
-    initializeAudioElement();
-    getAudioDeviceInfo();
-    return () => {
-      stopSound();
-      if (audioContextRef.current) {
-        audioContextRef.current.close();
-      }
-      if (audioElementRef.current) {
-        audioElementRef.current.remove();
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (audioElementRef.current && selectedDeviceId) {
-      setAudioOutputDevice();
-    }
-  }, [selectedDeviceId]);
-
   const initializeAudioContext = () => {
     try {
       audioContextRef.current = new (window.AudioContext ||
@@ -223,7 +202,7 @@ export default function SpeakerTester() {
     }
   };
 
-  const setAudioOutputDevice = async () => {
+  const setAudioOutputDevice = useCallback(async () => {
     if (audioElementRef.current && selectedDeviceId) {
       try {
         if ("setSinkId" in audioElementRef.current) {
@@ -242,9 +221,9 @@ export default function SpeakerTester() {
         setResult(`Error setting audio device: ${error}`);
       }
     }
-  };
+  }, [selectedDeviceId, deviceInfo]);
 
-  const getAudioDeviceInfo = async () => {
+  const getAudioDeviceInfo = useCallback(async () => {
     try {
       const devices = await navigator.mediaDevices.enumerateDevices();
       const audioOutputs = devices.filter(
@@ -278,7 +257,28 @@ export default function SpeakerTester() {
     } catch {
       console.error("Error getting device info");
     }
-  };
+  }, [selectedDeviceId]);
+
+  useEffect(() => {
+    initializeAudioContext();
+    initializeAudioElement();
+    getAudioDeviceInfo();
+    return () => {
+      stopSound();
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+      }
+      if (audioElementRef.current) {
+        audioElementRef.current.remove();
+      }
+    };
+  }, [getAudioDeviceInfo]);
+
+  useEffect(() => {
+    if (audioElementRef.current && selectedDeviceId) {
+      setAudioOutputDevice();
+    }
+  }, [selectedDeviceId, setAudioOutputDevice]);
 
   const playSound = (
     freq: number,
@@ -685,11 +685,10 @@ export default function SpeakerTester() {
                           (channel, index) => (
                             <div
                               key={index}
-                              className={`flex items-center justify-between rounded-lg border p-3 ${
-                                currentChannel === channel.name
-                                  ? "border-primary bg-primary/10"
-                                  : ""
-                              }`}
+                              className={`flex items-center justify-between rounded-lg border p-3 ${currentChannel === channel.name
+                                ? "border-primary bg-primary/10"
+                                : ""
+                                }`}
                             >
                               <div>
                                 <div className="font-medium">
@@ -954,9 +953,8 @@ export default function SpeakerTester() {
                   {testResults.map((result) => (
                     <div
                       key={result.id}
-                      className={`flex items-center justify-between rounded-lg border p-3 ${
-                        result.success ? "border-green-700" : "border-red-700"
-                      }`}
+                      className={`flex items-center justify-between rounded-lg border p-3 ${result.success ? "border-green-700" : "border-red-700"
+                        }`}
                     >
                       <div className="flex-1">
                         <div className="font-medium">
@@ -969,11 +967,10 @@ export default function SpeakerTester() {
                       </div>
                       <div className="flex gap-2">
                         <div
-                          className={`flex items-center justify-center rounded px-2 py-1 text-center text-xs font-medium ${
-                            result.success
-                              ? "bg-green-700 text-green-100"
-                              : "bg-red-700 text-red-100"
-                          }`}
+                          className={`flex items-center justify-center rounded px-2 py-1 text-center text-xs font-medium ${result.success
+                            ? "bg-green-700 text-green-100"
+                            : "bg-red-700 text-red-100"
+                            }`}
                         >
                           {result.success ? "Success" : "Failed"}
                         </div>

@@ -760,6 +760,7 @@ export default function CameraMicTester() {
     cameraSettings.frameRate,
     cameraSettings.facingMode,
     isCameraActive,
+    cameraStream,
   ]);
 
   // Effect to handle microphone device changes

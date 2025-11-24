@@ -108,7 +108,7 @@ export default function SQLFormatter() {
   ];
 
   // SQL Keywords for formatting
-  const sqlKeywords = [
+  const sqlKeywords = useMemo(() => [
     "SELECT",
     "FROM",
     "WHERE",
@@ -157,7 +157,7 @@ export default function SQLFormatter() {
     "MAX",
     "DISTINCT",
     "AS",
-  ];
+  ], []);
 
   // Basic SQL validation
   const validateSQL = useCallback((sql: string): ValidationError[] => {
@@ -197,7 +197,7 @@ export default function SQLFormatter() {
       }
 
       // Check for SQL injection patterns (basic)
-      if (line.match(/['"][^'"]*['"]\s*;?\s*(--|\/\*)/i)) {
+      if (line.match(/['"][^'"]*['"]\\s*;?\\s*(--|\/\*)/i)) {
         errors.push({
           line: lineIndex + 1,
           column: line.indexOf("--") || line.indexOf("/*"),
@@ -286,7 +286,7 @@ export default function SQLFormatter() {
 
       return formattedLines.join("\n");
     },
-    [indentSize, uppercaseKeywords, newlineBeforeKeywords],
+    [indentSize, uppercaseKeywords, newlineBeforeKeywords, sqlKeywords],
   );
 
   // Minify SQL query

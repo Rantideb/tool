@@ -83,6 +83,46 @@ export default function HashGenerator() {
     },
   ]);
 
+  const computeHash = useCallback(async (
+    data: ArrayBuffer,
+    algorithm: string,
+  ): Promise<string> => {
+    let hashAlgorithm = "";
+
+    switch (algorithm) {
+      case "md5":
+        // Note: MD5 is not available in Web Crypto API
+        // We'll use a lightweight MD5 implementation
+        return await computeMD5(data);
+      case "sha1":
+        hashAlgorithm = "SHA-1";
+        break;
+      case "sha256":
+        hashAlgorithm = "SHA-256";
+        break;
+      case "sha384":
+        hashAlgorithm = "SHA-384";
+        break;
+      case "sha512":
+        hashAlgorithm = "SHA-512";
+        break;
+      default:
+        throw new Error(`Unsupported algorithm: ${algorithm}`);
+    }
+
+    const hashBuffer = await crypto.subtle.digest(hashAlgorithm, data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+  }, []);
+
+  // MD5 implementation using crypto-js
+  const computeMD5 = async (data: ArrayBuffer): Promise<string> => {
+    // Convert ArrayBuffer to WordArray for crypto-js
+    const uint8Array = new Uint8Array(data);
+    const wordArray = CryptoJS.lib.WordArray.create(uint8Array);
+    return CryptoJS.MD5(wordArray).toString();
+  };
+
   const generateHashes = useCallback(
     async (data: string | ArrayBuffer) => {
       setIsProcessing(true);
@@ -118,48 +158,8 @@ export default function HashGenerator() {
         setIsProcessing(false);
       }
     },
-    [algorithms],
+    [algorithms, computeHash],
   );
-
-  const computeHash = async (
-    data: ArrayBuffer,
-    algorithm: string,
-  ): Promise<string> => {
-    let hashAlgorithm = "";
-
-    switch (algorithm) {
-      case "md5":
-        // Note: MD5 is not available in Web Crypto API
-        // We'll use a lightweight MD5 implementation
-        return await computeMD5(data);
-      case "sha1":
-        hashAlgorithm = "SHA-1";
-        break;
-      case "sha256":
-        hashAlgorithm = "SHA-256";
-        break;
-      case "sha384":
-        hashAlgorithm = "SHA-384";
-        break;
-      case "sha512":
-        hashAlgorithm = "SHA-512";
-        break;
-      default:
-        throw new Error(`Unsupported algorithm: ${algorithm}`);
-    }
-
-    const hashBuffer = await crypto.subtle.digest(hashAlgorithm, data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
-  };
-
-  // MD5 implementation using crypto-js
-  const computeMD5 = async (data: ArrayBuffer): Promise<string> => {
-    // Convert ArrayBuffer to WordArray for crypto-js
-    const uint8Array = new Uint8Array(data);
-    const wordArray = CryptoJS.lib.WordArray.create(uint8Array);
-    return CryptoJS.MD5(wordArray).toString();
-  };
 
   useEffect(() => {
     if (activeTab === "text" && inputText.trim()) {

@@ -1,7 +1,7 @@
 "use client";
 
 import QrCode from "qrcode";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import {
   Copy,
   Check,
@@ -90,7 +90,7 @@ export default function QRGenerator() {
   const [copied, setCopied] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const generateQRCode = async (data: string) => {
+  const generateQRCode = useCallback(async (data: string) => {
     if (!data.trim()) return;
 
     try {
@@ -120,9 +120,9 @@ export default function QRGenerator() {
     } catch (error) {
       console.error("Error generating QR code:", error);
     }
-  };
+  }, [qrSettings]);
 
-  const getQRData = () => {
+  const getQRData = useCallback(() => {
     switch (activeTab) {
       case "text":
         return qrData.text;
@@ -148,12 +148,12 @@ END:VCARD`;
       default:
         return qrData.text;
     }
-  };
+  }, [qrData, activeTab]);
 
   useEffect(() => {
     const data = getQRData();
     generateQRCode(data);
-  }, [qrData, qrSettings, activeTab]);
+  }, [getQRData, generateQRCode]);
 
   const downloadQR = () => {
     if (!qrDataURL) return;

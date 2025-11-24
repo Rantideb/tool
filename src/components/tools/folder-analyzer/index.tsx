@@ -271,7 +271,7 @@ export default function FolderStructureAnalyzer() {
     };
   };
 
-  const filterStructure = (
+  const filterStructure = useCallback((
     structure: FileItem,
     query: string,
     fileType: string,
@@ -323,7 +323,7 @@ export default function FolderStructureAnalyzer() {
 
     traverse(structure, filtered);
     return filtered;
-  };
+  }, []);
 
   const handleFolderSelect = async () => {
     if (fileInputRef.current) {
@@ -361,7 +361,7 @@ export default function FolderStructureAnalyzer() {
       minFileSize,
     );
     setFilteredStructure(filtered);
-  }, [folderStructure, searchQuery, fileTypeFilter, minFileSize]);
+  }, [folderStructure, searchQuery, fileTypeFilter, minFileSize, filterStructure]);
 
   React.useEffect(() => {
     applyFilters();
@@ -527,9 +527,8 @@ export default function FolderStructureAnalyzer() {
     return (
       <div key={item.path} className="select-none">
         <div
-          className={`flex cursor-pointer items-center gap-2 rounded px-2 py-1 hover:bg-muted ${
-            item.type === "directory" ? "font-medium" : ""
-          }`}
+          className={`flex cursor-pointer items-center gap-2 rounded px-2 py-1 hover:bg-muted ${item.type === "directory" ? "font-medium" : ""
+            }`}
           style={{ paddingLeft: `${depth * 20 + 8}px` }}
           onClick={() => item.type === "directory" && toggleFolder(item.path)}
         >
@@ -545,7 +544,7 @@ export default function FolderStructureAnalyzer() {
             )
           ) : (
             fileTypeIcons[
-              getFileType(item.name) as keyof typeof fileTypeIcons
+            getFileType(item.name) as keyof typeof fileTypeIcons
             ] || <File className="h-4 w-4 text-gray-400" />
           )}
 
@@ -754,7 +753,7 @@ export default function FolderStructureAnalyzer() {
                                 <div className="flex items-center gap-2">
                                   {
                                     fileTypeIcons[
-                                      type as keyof typeof fileTypeIcons
+                                    type as keyof typeof fileTypeIcons
                                     ]
                                   }
                                   <span className="capitalize">{type}</span>

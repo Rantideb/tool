@@ -6,6 +6,7 @@ import { Home, ToolCase, Search, X, PlusSquare } from "lucide-react";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ProgressLink } from "@/components/ui/progress-link";
+import ThemeToggle from "@/components/general/ThemeToggle";
 
 import { tools } from "@/config";
 
@@ -18,6 +19,7 @@ import {
   SidebarMenuButton,
   SidebarGroupLabel,
   SidebarGroupContent,
+  SidebarFooter,
 } from "@/components/ui/sidebar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -186,6 +188,13 @@ export default function AppSidebar() {
           </SidebarGroup>
         </ScrollArea>
       </SidebarContent>
+
+      <SidebarFooter>
+        <div className="flex items-center justify-between border-t p-4">
+          <span className="text-sm text-muted-foreground">Theme</span>
+          <ThemeToggle />
+        </div>
+      </SidebarFooter>
     </Sidebar>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import {
   Eye,
@@ -89,7 +89,7 @@ export default function APITester() {
   const [headerString, setHeaderString] = useState("");
   const [activeTab, setActiveTab] = useState("request");
 
-  useEffect(() => {
+  const initializeFromStorage = useCallback(() => {
     const savedHistory = loadFromLocalStorage<RequestHistory[]>(
       STORAGE_KEYS.HISTORY,
       [],
@@ -112,7 +112,11 @@ export default function APITester() {
     setEnvironments(savedEnvironments);
     setActiveEnvironment(savedActiveEnv);
     setHeaderString(stringifyHeaders(currentRequest.headers));
-  }, []);
+  }, [currentRequest.headers]);
+
+  useEffect(() => {
+    initializeFromStorage();
+  }, [initializeFromStorage]);
 
   const saveHistory = (newHistory: RequestHistory[]) => {
     setHistory(newHistory);
@@ -446,11 +450,11 @@ export default function APITester() {
                     {["GET", "HEAD", "OPTIONS"].includes(
                       currentRequest.method,
                     ) && (
-                      <p className="mt-1 text-sm text-muted-foreground">
-                        Request body is not supported for{" "}
-                        {currentRequest.method} requests
-                      </p>
-                    )}
+                        <p className="mt-1 text-sm text-muted-foreground">
+                          Request body is not supported for{" "}
+                          {currentRequest.method} requests
+                        </p>
+                      )}
                   </div>
                 </TabsContent>
 
